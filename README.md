@@ -30,7 +30,7 @@ Swatch chrome colors live in `SkinRow.module.css`; the token maps in `src/skins.
 Install this package from the repository (the prebuilt `lib/` is committed):
 
 ```sh
-pnpm add github:<owner>/<repo>
+pnpm add github:edwardyang0011/dsh-ui-skins
 ```
 
 Then register the row in your DSH profile patch — `cordis.patch.yml` under `$DSH_HOME/profiles/...`:

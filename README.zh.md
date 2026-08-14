@@ -30,7 +30,7 @@
 从本仓库安装该包（已提交预构建的 `lib/`）：
 
 ```sh
-pnpm add github:<owner>/<repo>
+pnpm add github:edwardyang0011/dsh-ui-skins
 ```
 
 然后在你的 DSH profile patch —— `$DSH_HOME/profiles/...` 下的 `cordis.patch.yml` —— 中注册该行：

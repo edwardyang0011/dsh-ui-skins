@@ -1,0 +1,84 @@
+/* Skin row (title + swatch button row, column gap 8, pad 16/0, hairline
+ * separator; the section column strips it when last — mirrors the Appearance
+ * row's layout contract). */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.swatchRow {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* One choice: swatch dot over a short label, flexed down from the Appearance
+ * cube so all five sit on one row in the 800 panel, wrapping when narrower. */
+.swatchButton {
+  box-sizing: border-box;
+  flex: 1 1 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+}
+
+.swatchButton:hover:not(.selected) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.selected {
+  background: var(--dsw-alias-bg-module-platform);
+  border-color: var(--dsw-static-neutral-bluish-400);
+}
+
+/* Swatch dot: one representative color per skin (chrome only — the actual
+ * theme values live in src/skins.ts). Default shows half light / half dark. */
+.swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--dsw-alias-border-l2);
+}
+
+.swatch[data-skin='default'] {
+  background: linear-gradient(135deg, #ffffff 49%, #1b1b1d 51%);
+}
+
+.swatch[data-skin='ocean'] {
+  background: #0e7490;
+}
+
+.swatch[data-skin='sakura'] {
+  background: #c2416c;
+}
+
+.swatch[data-skin='forest'] {
+  background: #34d399;
+}
+
+.swatch[data-skin='midnight'] {
+  background: #a78bfa;
+}

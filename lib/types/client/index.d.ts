@@ -3,6 +3,7 @@ import { type SkinKey } from './locales.ts';
 export type { SkinRowComponentProps, SkinRowInjected } from './SkinRow.tsx';
 export type { SkinRowState } from './settings-store.ts';
 export type { SkinKey } from './locales.ts';
+export type { CustomSkinColors } from '../skin-settings.ts';
 /** Namespace owning this feature's settings-row copy. */
 export declare const SETTINGS_NS = "settings.skins";
 declare module '@deepseek-ai/dsh-client-ui-slots' {
@@ -17,9 +18,10 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
  */
 export declare const inject: string[];
 /**
- * Client plugin body: register the skins, keep the durable skin preference in
- * agreement with the live theme preference, and register the feature-owned
- * Skin row into the General section's item slot.
+ * Client plugin body: register the skins, manage the dynamic custom theme,
+ * keep the durable skin preference in agreement with the live theme
+ * preference, and register the feature-owned Skin row into the General
+ * section's item slot.
  * @param ctx - client cordis context.
  */
 export declare function apply(ctx: ClientContext): void;

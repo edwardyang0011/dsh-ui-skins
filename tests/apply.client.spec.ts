@@ -191,6 +191,105 @@ describe('ui-skins apply', () => {
     expect(instance.getSnapshot().selected).toBe('dark')
   })
 
+  it('picks the custom skin, persists its colors, and Default restores the captured built-in', async () => {
+    const b = await bench()
+    b.values[THEME_SETTINGS_NAMESPACE]!.preference = 'dark'
+    declareItems(b.slots)
+    await b.ctx.plugin({ inject: themeInject, apply: themeApply }).await()
+    await b.ctx.plugin({ inject, apply }).await()
+    const theme = b.ctx.get('theme') as ThemeRuntime
+    await vi.waitFor(() => { expect(theme.getTheme().preference).toBe('dark') })
+
+    const { instance, face } = faceOf(b.slots)
+    face.setSkin('custom')
+    expect(theme.getTheme().preference).toBe('custom')
+    expect(instance.getSnapshot().selected).toBe('custom')
+    const active = theme.getTheme().active
+    expect(active.colorScheme).toBe('light')
+    expect(active.tokens['--dsw-alias-brand-primary']).toBe('#0e7490')
+    await vi.waitFor(() => {
+      expect(b.values[SKIN_SETTINGS_NAMESPACE]!.skin).toBe('custom')
+      expect(b.values[SKIN_SETTINGS_NAMESPACE]!.custom).toEqual({ scheme: 'light', accent: '#0e7490', bgBase: '#eef3f9' })
+    })
+
+    face.setSkin('default')
+    expect(theme.getTheme().preference).toBe('dark')
+  })
+
+  it('boots a persisted custom skin from its stored colors', async () => {
+    const b = await bench()
+    b.values[SKIN_SETTINGS_NAMESPACE]!.skin = 'custom'
+    b.values[SKIN_SETTINGS_NAMESPACE]!.custom = { scheme: 'dark', accent: '#a78bfa', bgBase: '#0e0d19' }
+    declareItems(b.slots)
+    await b.ctx.plugin({ inject: themeInject, apply: themeApply }).await()
+    const fiber = b.ctx.plugin({ inject, apply })
+    await fiber.await()
+    const theme = b.ctx.get('theme') as ThemeRuntime
+    await vi.waitFor(() => { expect(theme.getTheme().preference).toBe('custom') })
+    const active = theme.getTheme().active
+    expect(active.colorScheme).toBe('dark')
+    expect(active.tokens['--dsw-alias-brand-primary']).toBe('#a78bfa')
+    expect(active.tokens['--dsw-alias-bg-base']).toBe('#0e0d19')
+
+    // Teardown removes the custom theme and its token layer.
+    await fiber.dispose()
+    expect(theme.getTheme().themes.map(t => t.id)).toEqual(['light', 'dark'])
+  })
+
+  it('editing custom colors replaces the token layer, flips the scheme, and persists', async () => {
+    const b = await bench()
+    declareItems(b.slots)
+    await b.ctx.plugin({ inject: themeInject, apply: themeApply }).await()
+    await b.ctx.plugin({ inject, apply }).await()
+    const theme = b.ctx.get('theme') as ThemeRuntime
+
+    const { instance, face } = faceOf(b.slots)
+    // A direct color write activates the custom skin even without a prior pick.
+    face.setCustom({ scheme: 'light', accent: '#ff0000', bgBase: '#ffffff' })
+    expect(theme.getTheme().preference).toBe('custom')
+    expect(instance.getSnapshot().custom).toEqual({ scheme: 'light', accent: '#ff0000', bgBase: '#ffffff' })
+    expect(theme.getTheme().active.colorScheme).toBe('light')
+    expect(theme.getTheme().active.tokens['--dsw-alias-brand-primary']).toBe('#ff0000')
+    await vi.waitFor(() => {
+      expect(b.values[SKIN_SETTINGS_NAMESPACE]!.skin).toBe('custom')
+      expect(b.values[SKIN_SETTINGS_NAMESPACE]!.custom).toEqual({ scheme: 'light', accent: '#ff0000', bgBase: '#ffffff' })
+    })
+
+    // Scheme flip re-registers the theme (dispose + register) with the new palette.
+    face.setCustom({ scheme: 'dark', accent: '#a78bfa', bgBase: '#0e0d19' })
+    expect(theme.getTheme().active.colorScheme).toBe('dark')
+    expect(instance.getSnapshot().custom).toEqual({ scheme: 'dark', accent: '#a78bfa', bgBase: '#0e0d19' })
+
+    // Back to light exercises the flip-again path.
+    face.setCustom({ scheme: 'light', accent: '#123456', bgBase: '#f0f0f0' })
+    expect(theme.getTheme().active.colorScheme).toBe('light')
+    expect(theme.getTheme().active.tokens['--dsw-alias-brand-primary']).toBe('#123456')
+
+    // Same-scheme edit skips the re-registration and only replaces the layer.
+    face.setCustom({ scheme: 'light', accent: '#00aa44', bgBase: '#f0f0f0' })
+    expect(theme.getTheme().active.colorScheme).toBe('light')
+    expect(theme.getTheme().active.tokens['--dsw-alias-brand-primary']).toBe('#00aa44')
+  })
+
+  it('clears a custom skin when a built-in preference wins (Appearance row)', async () => {
+    const b = await bench()
+    b.values[SKIN_SETTINGS_NAMESPACE]!.skin = 'custom'
+    b.values[SKIN_SETTINGS_NAMESPACE]!.custom = { scheme: 'dark', accent: '#a78bfa', bgBase: '#0e0d19' }
+    declareItems(b.slots)
+    await b.ctx.plugin({ inject: themeInject, apply: themeApply }).await()
+    await b.ctx.plugin({ inject, apply }).await()
+    const theme = b.ctx.get('theme') as ThemeRuntime
+    await vi.waitFor(() => { expect(theme.getTheme().preference).toBe('custom') })
+
+    theme.setTheme('dark')
+    await vi.waitFor(() => { expect(theme.getTheme().preference).toBe('dark') })
+    await vi.waitFor(() => {
+      expect(b.values[SKIN_SETTINGS_NAMESPACE]!.skin).toBe('default')
+    })
+    const { instance } = faceOf(b.slots)
+    expect(instance.getSnapshot().selected).toBe('dark')
+  })
+
   it('rejects an unknown skin id through the row face', async () => {
     const b = await bench()
     declareItems(b.slots)

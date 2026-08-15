@@ -12,7 +12,7 @@
 - 「默认」选项恢复切换皮肤时捕获的内置偏好（没有捕获时回落为 `system`）；
 - 操作「外观」行（内置偏好胜出）会清除持久化皮肤，因此两行不会漂移——后写者胜。
 
-持久化 schema（`ui-skins`）：`skin` ∈ `default | ocean | sakura | forest | midnight`，默认 `default`。
+持久化 schema（`ui-skins`）：`skin` ∈ `default | custom | ocean | sakura | forest | midnight`（默认 `default`），另有可选的 `custom` 颜色段（`scheme`、`accent`、`bgBase`）。
 
 预设皮肤：
 
@@ -25,12 +25,14 @@
 
 色块（swatch）外观颜色在 `SkinRow.module.css` 中；`src/skins.ts` 中的令牌表才是主题值本身。
 
+自定义颜色：「自定义」色块会打开编辑器（配色方案、主色、背景），通过 `buildCustomTokenPairs` 从两个颜色推导出完整令牌集，并以 `overrideTokens` 覆盖层叠加到已注册的 `custom` 主题上——修改颜色只替换覆盖层，切换配色方案会重新注册主题。颜色持久化在 `ui-skins.custom` 下，启动时自动恢复；操作「外观」行会像清除其它皮肤一样清除自定义皮肤。
+
 ## Install
 
 从本仓库安装该包（已提交预构建的 `lib/`）：
 
 ```sh
-pnpm add github:edwardyang0011/dsh-ui-skins
+pnpm add github:<owner>/<repo>
 ```
 
 然后在你的 DSH profile patch —— `$DSH_HOME/profiles/...` 下的 `cordis.patch.yml` —— 中注册该行：
@@ -41,6 +43,8 @@ pnpm add github:edwardyang0011/dsh-ui-skins
 ```
 
 重启 `dsh web`，在 设置 → 通用 中选择皮肤。peer 依赖与已发布的 `0.1.0-rc.5` dsh 家族版本一致。
+
+**宿主前置条件：** 持久化需要 `ui-skins` 命名空间出现在 Host API 代理的 Web 设置白名单（dsh-host-apiproxy 的 `WEB_SETTINGS_NAMESPACES`）中。随皮肤插件一起发布的官方构建已包含；未包含的构建会以 `settings-not-exposed` 拒绝浏览器的设置写入，任何选择在刷新后都会重置。
 
 ## Model Experience
 

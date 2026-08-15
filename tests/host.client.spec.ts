@@ -20,9 +20,11 @@ describe('ui-skins host', () => {
     const fiber = ctx.plugin({ apply })
     await fiber.await()
     const ns = settingsNamespace(SKIN_SETTINGS_NAMESPACE)
-    expect(ctx.settings.get(ns)).toEqual({ skin: DEFAULT_SKIN })
+    // The normalized section materializes the all-optional custom field as an
+    // empty object; the browser scope carries raw values (absent stays absent).
+    expect(ctx.settings.get(ns)).toEqual({ skin: DEFAULT_SKIN, custom: {} })
     await ctx.settings.update(ns, { skin: 'ocean' })
-    expect(ctx.settings.get(ns)).toEqual({ skin: 'ocean' })
+    expect(ctx.settings.get(ns)).toEqual({ skin: 'ocean', custom: {} })
     await expect(ctx.settings.update(ns, { skin: 'sepia' })).rejects.toThrow()
     await fiber.dispose()
     expect(ctx.settings.describe().map(row => row.ns)).not.toContain(ns)

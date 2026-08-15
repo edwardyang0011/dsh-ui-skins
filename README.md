@@ -12,7 +12,7 @@ The built-in Appearance row stays the preference authority. The plugin mirrors `
 - the **Default** choice restores the built-in preference captured when the skin was picked (or `system` when none was);
 - touching the Appearance row (a built-in preference wins) clears the persisted skin, so the two rows cannot drift — the last write wins.
 
-Durable schema (`ui-skins`): `skin` ∈ `default | ocean | sakura | forest | midnight`, default `default`.
+Durable schema (`ui-skins`): `skin` ∈ `default | custom | ocean | sakura | forest | midnight` (default `default`), plus the optional `custom` colors section (`scheme`, `accent`, `bgBase`).
 
 Presets:
 
@@ -25,12 +25,14 @@ Presets:
 
 Swatch chrome colors live in `SkinRow.module.css`; the token maps in `src/skins.ts` are the theme values.
 
+Custom colors: the **自定义 (Custom)** swatch opens an editor (base palette, accent, background) that derives the full token set from two colors via `buildCustomTokenPairs` and stacks it as an `overrideTokens` layer over a registered `custom` theme — editing colors only replaces the layer, switching the palette re-registers the theme. Colors persist under `ui-skins.custom` and re-apply on boot; an Appearance-row write clears the custom skin like any other.
+
 ## Install
 
 Install this package from the repository (the prebuilt `lib/` is committed):
 
 ```sh
-pnpm add github:edwardyang0011/dsh-ui-skins
+pnpm add github:<owner>/<repo>
 ```
 
 Then register the row in your DSH profile patch — `cordis.patch.yml` under `$DSH_HOME/profiles/...`:
@@ -41,6 +43,8 @@ Then register the row in your DSH profile patch — `cordis.patch.yml` under `$D
 ```
 
 Restart `dsh web` and pick a skin under Settings → General. The peer dependencies match the published `0.1.0-rc.5` dsh family.
+
+**Host prerequisite:** persistence needs the `ui-skins` namespace on the Host API-proxy's Web settings allowlist (`WEB_SETTINGS_NAMESPACES` in dsh-host-apiproxy). Official builds that ship the skin plugin include it; a stock build without it rejects the browser's settings writes with `settings-not-exposed` and every choice resets on refresh.
 
 ## Model Experience
 

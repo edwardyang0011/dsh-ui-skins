@@ -7,6 +7,11 @@ export declare const zh: {
     'skins.sakura': string;
     'skins.forest': string;
     'skins.midnight': string;
+    'skins.custom': string;
+    'skins.custom.schemeLight': string;
+    'skins.custom.schemeDark': string;
+    'skins.custom.accent': string;
+    'skins.custom.background': string;
 };
 /** The settings.skins namespace key union. */
 export type SkinKey = keyof typeof zh;
@@ -18,5 +23,10 @@ export declare const en: {
     'skins.sakura': string;
     'skins.forest': string;
     'skins.midnight': string;
+    'skins.custom': string;
+    'skins.custom.schemeLight': string;
+    'skins.custom.schemeDark': string;
+    'skins.custom.accent': string;
+    'skins.custom.background': string;
 };
 //# sourceMappingURL=locales.d.ts.map

@@ -8,6 +8,11 @@ export const zh = {
   'skins.sakura': '樱花',
   'skins.forest': '松林',
   'skins.midnight': '深空',
+  'skins.custom': '自定义',
+  'skins.custom.schemeLight': '浅色',
+  'skins.custom.schemeDark': '深色',
+  'skins.custom.accent': '主色',
+  'skins.custom.background': '背景',
 } satisfies Record<string, string>
 
 /** The settings.skins namespace key union. */
@@ -21,4 +26,9 @@ export const en = {
   'skins.sakura': 'Sakura',
   'skins.forest': 'Forest',
   'skins.midnight': 'Midnight',
+  'skins.custom': 'Custom',
+  'skins.custom.schemeLight': 'Light',
+  'skins.custom.schemeDark': 'Dark',
+  'skins.custom.accent': 'Accent',
+  'skins.custom.background': 'Background',
 } satisfies Record<SkinKey, string>

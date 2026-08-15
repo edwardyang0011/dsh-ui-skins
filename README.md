@@ -32,7 +32,7 @@ Custom colors: the **自定义 (Custom)** swatch opens an editor (base palette, 
 Install this package from the repository (the prebuilt `lib/` is committed):
 
 ```sh
-pnpm add github:<owner>/<repo>
+pnpm add github:edwardyang0011/dsh-ui-skins
 ```
 
 Then register the row in your DSH profile patch — `cordis.patch.yml` under `$DSH_HOME/profiles/...`:
